@@ -6,7 +6,6 @@ app = Flask(__name__)
 
 openai.api_key = os.environ.get('OPENAI_KEY')
 
-
 @app.route('/')
 def index():
     return "<h1>Hello, World!</h1>"
@@ -20,6 +19,17 @@ def chatgpt():
         model="gpt-3.5-turbo",
         messages=[{"role": "user", "content": message}]
     )
-    return completion['choices'][0]['message']['content']
 
+@app.route('/generate-code')
+def generate_code():
+    language = request.args.get('language')
+    content = request.args.get('content')
+
+    message = f"Generate {language} code to achieve the following functionality:\n\n{content}"
+    print(message)
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": message}]
+    )
+    return completion['choices'][0][message]['content']
 
